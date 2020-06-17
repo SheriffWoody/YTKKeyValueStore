@@ -88,6 +88,10 @@ static NSString *const DROP_TABLE_SQL = @" DROP TABLE '%@' ";
             [self close];
         }
         _dbQueue = [FMDatabaseQueue databaseQueueWithPath:dbPath];
+        [_dbQueue inDatabase:^(FMDatabase *db) {
+            [db executeStatements:@"PRAGMA journal_mode=WAL"];
+            [db executeStatements:@"PRAGMA schema.auto_vacuume=INCREMENTAL"];
+        }];
     }
     return self;
 }
